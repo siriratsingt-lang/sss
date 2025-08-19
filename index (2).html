@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ตรวจสอบค่า pH ในน้ำ</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background: linear-gradient(135deg, #e0f7fa, #f9f9f9);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #00796B;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="number"] {
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="number"]:focus {
+      border-color: #00796B;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .acid {
+      background-color: #ffebee;
+      border-left: 6px solid #d32f2f;
+    }
+
+    .alkaline {
+      background-color: #e3f2fd;
+      border-left: 6px solid #1976d2;
+    }
+
+    .neutral {
+      background-color: #e8f5e9;
+      border-left: 6px solid #388e3c;
+    }
+
+    .error {
+      background-color: #fff3cd;
+      border-left: 6px solid #ff9800;
+    }
+  </style>
+</head>
+<body>
+  <h2>ตรวจสอบค่า pH ในน้ำ</h2>
+  <label for="phInput">กรอกค่า pH:</label>
+  <input type="number" id="phInput" step="0.1" min="0" max="14" placeholder="เช่น 7.0">
+  <button onclick="checkPH()">ตรวจสอบ</button>
+
+  <div id="result"></div>
+
+  <script>
+    const phInput = document.getElementById("phInput");
+    const resultDiv = document.getElementById("result");
+
+    function checkPH() {
+      const ph = parseFloat(phInput.value);
+      resultDiv.className = ""; // Reset class
+      resultDiv.style.display = "block";
+
+      if (isNaN(ph) || ph < 0 || ph > 14) {
+        resultDiv.innerHTML = "<strong>⚠ กรุณากรอกค่า pH ระหว่าง 0 ถึง 14.</strong>";
+        resultDiv.classList.add("error");
+        return;
+      }
+
+      let message = "";
+
+      if (ph < 6.5) {
+        message = `
+          <strong>น้ำมีสภาพเป็นกรด</strong><br>
+          • ค่า pH ต่ำกว่า 6.5<br>
+          • อาจส่งผลเสียต่อสุขภาพ<br>
+          • อาจกัดกร่อนท่อหรืออุปกรณ์โลหะ
+        `;
+        resultDiv.classList.add("acid");
+      } else if (ph > 8.5) {
+        message = `
+          <strong>น้ำมีสภาพเป็นด่าง</strong><br>
+          • ค่า pH สูงกว่า 8.5<br>
+          • อาจมีรสขม<br>
+          • อาจมีตะกอนหรือแร่ธาตุที่ไม่ละลายน้ำ
+        `;
+        resultDiv.classList.add("alkaline");
+      } else {
+        message = `
+          <strong>น้ำอยู่ในช่วงมาตรฐาน</strong><br>
+          • ค่า pH อยู่ระหว่าง 6.5 ถึง 8.5<br>
+          • เหมาะสำหรับการใช้งานและการบริโภค
+        `;
+        resultDiv.classList.add("neutral");
+      }
+
+      resultDiv.innerHTML = message;
+    }
+
+    // กด Enter เพื่อเรียกฟังก์ชัน
+    phInput.addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        checkPH();
+      }
+    });
+
+    // ล้างผลลัพธ์เมื่อผู้ใช้พิมพ์ใหม่
+    phInput.addEventListener("input", function() {
+      resultDiv.style.display = "none";
+      resultDiv.className = "";
+      resultDiv.innerHTML = "";
+    });
+  </script>
+</body>
+</html>
